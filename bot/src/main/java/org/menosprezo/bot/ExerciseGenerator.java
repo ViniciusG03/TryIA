@@ -29,7 +29,9 @@ public class ExerciseGenerator {
     public String[] generateExercise(String level) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
-        String prompt = String.format("Crie um exercício de inglês nível %s com respostas. Somente neste formato: Complete: 'I ___ to school.' (go/goes) - $resposta", level);
+        String prompt = String.format("Gere um exercício de inglês de nivel %s no formato:\n" +
+                        "Complete: 'She ___ to school.' (is/am/are) - \n" +
+                        "Responda apenas no formato acima, sem explicação ou resposta correta.\n", level);
 
         String jsonBody = "{"
                 + "\"model\": \"gpt-3.5-turbo\","
@@ -46,6 +48,7 @@ public class ExerciseGenerator {
 
         if (response.isSuccessful() && response.body() != null) {
             String responseBody = response.body().string();
+            System.out.println("Resposta da API: " + responseBody);
             JSONObject jsonResponse = new JSONObject(responseBody);
             JSONArray choices = jsonResponse.getJSONArray("choices");
 
