@@ -53,6 +53,7 @@ Este projeto é um **bot do Telegram** desenvolvido em **Java**, que integra fun
 2. Adicione suas configurações no arquivo `BotConfig.java`:
    ```java
    public class BotConfig {
+   //Procure usar váriaveis de ambiente!
        public static final String BOT_USERNAME = "SEU_BOT_USERNAME";
        public static final String BOT_TOKEN = "SEU_BOT_TOKEN";
    }
@@ -60,6 +61,7 @@ Este projeto é um **bot do Telegram** desenvolvido em **Java**, que integra fun
 
 3. Configure as chaves da **Amazon Polly** no arquivo `PollyConfig.java`:
    ```java
+   //Procure usar váriaveis de ambiente!
    public class PollyConfig {
        public static final String ACESS_KEY = "SUA_ACCESS_KEY";
        public static final String SECRET_KEY = "SUA_SECRET_KEY";
