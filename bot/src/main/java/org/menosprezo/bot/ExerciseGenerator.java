@@ -14,9 +14,10 @@ public class ExerciseGenerator {
         OkHttpClient client = new OkHttpClient();
 
         String prompt = String.format(
-                "Crie um exercício de inglês nível %s no formato:\n" +
+                "Gere um exercício de inglês nível %s no seguinte formato:\n" +
                         "Complete: 'She ___ to school.' (is/am/are)\n" +
-                        "Forneça apenas no formato acima, sem explicações adicionais.", level);
+                        "As opções devem ser fornecidas entre parênteses, como no exemplo.\n" +
+                        "Não inclua explicações adicionais ou a resposta correta.", level);
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", "gpt-3.5-turbo");
@@ -56,15 +57,12 @@ public class ExerciseGenerator {
             }
             throw new IOException("Resposta vazia ou mal formatada da API.");
         } else {
-            throw new IOException("Falha ao chamar a API: " + response.code() + " - " + response.message());
+            throw new IOException("Falha ao chamar a API: " + response.code());
         }
     }
 
     private String cleanExercise(String content) {
-        if (content.contains("-")) {
-            return content.substring(0, content.lastIndexOf("-")).trim();
-        }
-        return content.trim();
+        return content.replaceAll("\\s*-\\s*.*", "").trim();
     }
 
     private String extractAnswer(String content) {
