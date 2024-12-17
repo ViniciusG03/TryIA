@@ -29,7 +29,7 @@ public class ExerciseGenerator {
     public String[] generateExercise(String level) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
-        String prompt = String.format("Crie um exercício de inglês nível %s com respostas. Exemplo: Complete: 'I ___ to school.' (go/goes)", level);
+        String prompt = String.format("Crie um exercício de inglês nível %s com respostas. Somente neste formato: Complete: 'I ___ to school.' (go/goes) - $resposta", level);
 
         String jsonBody = "{"
                 + "\"model\": \"gpt-3.5-turbo\","
