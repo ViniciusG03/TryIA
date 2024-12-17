@@ -24,6 +24,14 @@ public class CommandHandler {
             return handleExerciseCommand(chatId, level);
         }
 
+        if (command.toLowerCase().startsWith("/help")) {
+            message.setText("Comandos disponíveis:\n" +
+                    "/start - Inicia o bot\n" +
+                    "/exercise [nível] - Gera um exercício de inglês\n" +
+                    "/help - Exibe os comandos disponíveis");
+            return message;
+        }
+
         message.setText("Comando não reconhecido. Use /help para ver os comandos disponíveis.");
         return message;
     }
