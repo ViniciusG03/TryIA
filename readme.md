@@ -153,7 +153,7 @@ Contribuições são bem-vindas! Siga os passos abaixo:
 
 - **Desenvolvedor**: Vinicius Oliveira
 - **Email**: viniciusgomes.33mes@gmail.com
-- **Telegram**: [Seu Link](https://t.me/contemp1)
+- **Telegram**: [Meu Link](https://t.me/contemp1)
 
 ---
 
