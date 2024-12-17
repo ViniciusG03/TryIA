@@ -16,8 +16,11 @@ public class ExerciseGenerator {
         String prompt = String.format(
                 "Gere um exercício de inglês nível %s no seguinte formato:\n" +
                         "Complete: 'She ___ to school.' (is/am/are)\n" +
-                        "As opções devem ser fornecidas entre parênteses, como no exemplo.\n" +
-                        "Não inclua explicações adicionais ou a resposta correta.", level);
+                        "Forneça as opções entre parênteses.\n" +
+                        "Adicione a resposta correta após o traço '-', mas sem explicações adicionais.\n" +
+                        "Exemplo:\n" +
+                        "Complete: 'She ___ to school.' (is/am/are) - is", level);
+
 
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", "gpt-3.5-turbo");
@@ -71,4 +74,5 @@ public class ExerciseGenerator {
         }
         return null;
     }
+
 }
