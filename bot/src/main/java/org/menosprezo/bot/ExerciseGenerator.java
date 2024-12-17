@@ -3,6 +3,7 @@ package org.menosprezo.bot;
 import okhttp3.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import java.util.regex.*;
 
 import java.io.IOException;
 
@@ -10,6 +11,10 @@ public class ExerciseGenerator {
 
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
     private static final String API_KEY = System.getenv("API_KEY");
+
+    private String cleanExercise(String content) {
+        return content.replaceAll("\\s*\\([^)]*\\)", "").trim();
+    }
 
     public String generateExercise(String level) throws IOException {
         OkHttpClient client = new OkHttpClient();
@@ -34,7 +39,8 @@ public class ExerciseGenerator {
             JSONObject jsonResponse = new JSONObject(responseBody);
             JSONArray choices = jsonResponse.getJSONArray("choices");
             if (!choices.isEmpty()) {
-                return choices.getJSONObject(0).getJSONObject("message").getString("content");
+                String content = choices.getJSONObject(0).getJSONObject("message").getString("content");
+                return cleanExercise(content);
             } else {
                 throw new IOException("Resposta vazia da API.");
             }
