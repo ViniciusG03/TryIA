@@ -38,26 +38,35 @@ public class BotHandler extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         try {
-            if (update.hasMessage()) {
-                String chatId = update.getMessage().getChatId().toString();
+            String chatId;
+
+            // Trata callback queries quando o usuário clica nos botões inline
+            if (update.hasCallbackQuery()) {
+                chatId = update.getCallbackQuery().getMessage().getChatId().toString();
+                String userAnswer = update.getCallbackQuery().getData(); // Resposta clicada pelo usuário
+
+                // Valida a resposta usando o CommandHandler
+                SendMessage response = commandHandler.validateCallbackAnswer(chatId, userAnswer);
+                execute(response);
+            }
+
+            // Trata mensagens de texto normais
+            else if (update.hasMessage()) {
+                chatId = update.getMessage().getChatId().toString();
 
                 if (update.getMessage().hasText()) {
                     String messageText = update.getMessage().getText();
 
-                    if (messageText != null && messageText.startsWith("/")) {
+                    if (messageText.startsWith("/")) {
                         SendMessage response = commandHandler.handleCommand(messageText, chatId);
                         execute(response);
                     } else {
                         handleTextMessage(chatId, messageText);
                     }
-                }
-
-                else if (update.getMessage().hasVoice()) {
+                } else if (update.getMessage().hasVoice()) {
                     String fileId = update.getMessage().getVoice().getFileId();
                     handleVoiceMessage(chatId, fileId);
-                }
-
-                else {
+                } else {
                     SendMessage unsupportedMessage = new SendMessage(chatId, "Tipo de mensagem não suportado. Envie texto ou áudio.");
                     execute(unsupportedMessage);
                 }
@@ -66,6 +75,7 @@ public class BotHandler extends TelegramLongPollingBot {
             e.printStackTrace();
         }
     }
+
 
     private void handleTextMessage(String chatId, String userMessage) throws TelegramApiException {
         if ("/start".equals(userMessage)) {
