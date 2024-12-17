@@ -1,6 +1,8 @@
 package org.menosprezo.bot;
 
 import okhttp3.*;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -28,7 +30,14 @@ public class ExerciseGenerator {
         Response response = client.newCall(request).execute();
 
         if (response.isSuccessful() && response.body() != null) {
-            return response.body().string();
+            String responseBody = response.body().string();
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            JSONArray choices = jsonResponse.getJSONArray("choices");
+            if (!choices.isEmpty()) {
+                return choices.getJSONObject(0).getJSONObject("message").getString("content");
+            } else {
+                throw new IOException("Resposta vazia da API.");
+            }
         } else {
             throw new IOException("Falha ao chamar a API: " + response.code());
         }
