@@ -35,14 +35,18 @@ public class ExerciseGenerator {
                         "Responda apenas no formato acima, sem explicação adicional ou respostas embutidas.\n" +
                         "As opções devem ser fornecidas entre parênteses.", level);
 
-        String jsonBody = "{"
-                + "\"model\": \"gpt-3.5-turbo\","
-                + "\"messages\": [{\"role\": \"user\", \"content\": \"" + prompt + "\"}]"
-                + "}";
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("model", "gpt-3.5-turbo");
+
+        JSONArray messages = new JSONArray();
+        JSONObject message = new JSONObject();
+        message.put("role", "system");
+        message.put("content", prompt);
+        messages.put(message);
 
         Request request = new Request.Builder()
                 .url(API_URL)
-                .post(RequestBody.create(jsonBody, MediaType.parse("application/json")))
+                .post(RequestBody.create(requestBody.toString(), MediaType.parse("application/json")))
                 .addHeader("Authorization", "Bearer " + API_KEY)
                 .build();
 
