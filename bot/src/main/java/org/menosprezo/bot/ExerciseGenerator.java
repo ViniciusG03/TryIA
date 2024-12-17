@@ -13,10 +13,20 @@ public class ExerciseGenerator {
     private static final String API_KEY = System.getenv("API_KEY");
 
     private String cleanExercise(String content) {
-        return content.replaceAll("\\s*\\([^)]*\\)", "").trim();
+        if (content.contains("-")) {
+            return content.substring(0, content.lastIndexOf("-")).trim();
+        }
+        return content.trim();
     }
 
-    public String generateExercise(String level) throws IOException {
+    private String extractAnswer(String content) {
+        if (content.contains("-")) {
+            return content.substring(content.lastIndexOf("-") + 1).trim();
+        }
+        return null;
+    }
+
+    public String[] generateExercise(String level) throws IOException {
         OkHttpClient client = new OkHttpClient();
 
         String prompt = String.format("Crie um exercício de inglês nível %s com respostas. Exemplo: Complete: 'I ___ to school.' (go/goes)", level);
@@ -38,14 +48,20 @@ public class ExerciseGenerator {
             String responseBody = response.body().string();
             JSONObject jsonResponse = new JSONObject(responseBody);
             JSONArray choices = jsonResponse.getJSONArray("choices");
+
             if (!choices.isEmpty()) {
                 String content = choices.getJSONObject(0).getJSONObject("message").getString("content");
-                return cleanExercise(content);
-            } else {
-                throw new IOException("Resposta vazia da API.");
+                String cleanExercise = cleanExercise(content);
+                String answer = extractAnswer(content);
+
+                if (answer != null) {
+                    return new String[]{cleanExercise, answer};
+                }
             }
+            throw new IOException("Resposta vazia ou mal formatada da API.");
         } else {
             throw new IOException("Falha ao chamar a API: " + response.code());
         }
     }
 }
+

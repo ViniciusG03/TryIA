@@ -1,6 +1,5 @@
 package org.menosprezo.bot;
 
-import org.menosprezo.bot.ExerciseGenerator;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.HashMap;
@@ -39,18 +38,24 @@ public class CommandHandler {
         message.setChatId(chatId);
 
         try {
-            String exercise = exerciseGenerator.generateExercise(level);
-            String answer = extractAnswer(exercise); // Extrai a resposta correta
-            String cleanExercise = cleanExerciseText(exercise); // Remove a resposta para o usuário
+            String[] exerciseData = exerciseGenerator.generateExercise(level);
+            String cleanExercise = exerciseData[0];
+            String correctAnswer = exerciseData[1];
 
-            activeExercises.put(chatId, answer); // Salva a resposta correta para o chatId
-            message.setText("Aqui está seu exercício (" + level + "):\n" + cleanExercise);
+            if (correctAnswer != null) {
+                activeExercises.put(chatId, correctAnswer); // Salva a resposta correta
+                message.setText("Aqui está seu exercício (" + level + "):\n" + cleanExercise);
+            } else {
+                message.setText("Erro ao gerar o exercício. Tente novamente.");
+            }
         } catch (Exception e) {
             e.printStackTrace();
             message.setText("Erro ao gerar o exercício. Tente novamente.");
         }
+
         return message;
     }
+
 
     private SendMessage validateAnswer(String userAnswer, String correctAnswer, String chatId) {
         SendMessage message = new SendMessage();
@@ -64,20 +69,5 @@ public class CommandHandler {
 
         activeExercises.remove(chatId); // Remove o exercício ativo
         return message;
-    }
-
-    private String extractAnswer(String exercise) {
-        int start = exercise.indexOf("(");
-        int end = exercise.indexOf(")");
-
-        if (start != -1 && end != -1 && start < end) {
-            return exercise.substring(start + 1, end).split("/")[0].trim();
-        }
-
-        return "Resposta não disponível";
-    }
-
-    private String cleanExerciseText(String exercise) {
-        return exercise.replaceAll("\\s*\\([^)]*\\)", "").trim();
     }
 }
