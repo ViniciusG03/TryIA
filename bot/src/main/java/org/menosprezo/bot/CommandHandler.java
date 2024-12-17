@@ -67,7 +67,14 @@ public class CommandHandler {
     }
 
     private String extractAnswer(String exercise) {
-        return exercise.substring(exercise.indexOf("(") + 1, exercise.indexOf(")")).split("/")[0].trim();
+        int start = exercise.indexOf("(");
+        int end = exercise.indexOf(")");
+
+        if (start != -1 && end != -1 && start < end) {
+            return exercise.substring(start + 1, end).split("/")[0].trim();
+        }
+
+        return "Resposta não disponível";
     }
 
     private String cleanExerciseText(String exercise) {
